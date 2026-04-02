@@ -28,7 +28,9 @@ from semi_supervised import (
 # Q1: Supervised Model Training
 # =============================================================================
 cleaned_df = preprocess(load_dataset(TRAIN_FILE))
-print(cleaned_df)
+features, label = separate_features_label(cleaned_df)
+X_cont, X_categ = split_continuous_categorical(features)
+print(X_categ)
 
 # =============================================================================
 # Q2: Supervised Model Evaluation

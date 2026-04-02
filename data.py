@@ -47,7 +47,10 @@ def separate_features_label(df):
     Returns:
         Tuple of (X, y) where X is a DataFrame of features and y is a Series.
     """
-    pass
+    label_col = df[LABEL_COL]
+    features = df.drop(columns=[LABEL_COL])
+    
+    return (features, label_col)
 
 
 def split_continuous_categorical(X):
@@ -61,7 +64,10 @@ def split_continuous_categorical(X):
     Returns:
         Tuple of (X_continuous, X_categorical) DataFrames.
     """
-    pass
+    X_continuous = X[CONTINUOUS_FEATURES]
+    X_categorical = X[CATEGORICAL_FEATURES]
+
+    return (X_continuous, X_categorical)
 
 
 def encode_categorical(X_cat, encoder=None):
