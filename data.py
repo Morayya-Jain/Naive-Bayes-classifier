@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
 
-from config import CONTINUOUS_FEATURES, CATEGORICAL_FEATURES, LABEL_COL, DROP_COLS
+from config import CONTINUOUS_FEATURES, CATEGORICAL_FEATURES, LABEL_COL
 
 
 def load_dataset(filepath):
@@ -17,14 +17,13 @@ def load_dataset(filepath):
     Returns:
         DataFrame with the loaded data.
     """
-    pass
+
+    df = pd.read_csv(filepath)
+    return df
 
 
 def preprocess(df):
     """Clean the dataset: drop the fnlwgt column and remove rows with missing values.
-
-    The spec says missing values appear as empty strings (,, in the CSV).
-    Convert those to NaN, then drop any row containing NaN.
 
     Args:
         df: Raw DataFrame from load_dataset.
@@ -32,7 +31,11 @@ def preprocess(df):
     Returns:
         Cleaned DataFrame with no missing values and fnlwgt removed.
     """
-    pass
+
+    cleaned_df = df.dropna(subset = CONTINUOUS_FEATURES + CATEGORICAL_FEATURES)  # Removing rows with null values 
+    cleaned_df.drop(columns='fnlwgt', inplace=True)  # Removing 'fnlwgt' column as it is not used
+    
+    return cleaned_df
 
 
 def separate_features_label(df):

@@ -21,7 +21,6 @@ CATEGORICAL_FEATURES = [
 ]
 
 LABEL_COL = 'income'
-DROP_COLS = ['fnlwgt']
 CLASSES = ['<=50K', '>50K']
 
 # Data file paths
