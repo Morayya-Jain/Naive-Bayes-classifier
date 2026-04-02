@@ -29,13 +29,17 @@ def compute_metrics(y_true, y_pred):
         y_pred: Array of predicted labels.
 
     Returns:
-        Dict with keys 'accuracy', 'precision', 'recall', 'f1'.
+        Dict with 'accuracy' (float) and per-class dicts, e.g.
+        {'accuracy': ..., '<=50K': {'precision': ..., 'recall': ..., 'f1': ...},
+         '>50K': {'precision': ..., 'recall': ..., 'f1': ...}}.
     """
     pass
 
 
 def posterior_ratio(log_proba):
     """Compute the posterior ratio R = P(c1|x) / P(c2|x) for each instance.
+
+    Convention: c1 = '>50K' (column 1), c2 = '<=50K' (column 0) in log_proba.
 
     This measures prediction confidence:
         R >> 1 means strong confidence toward class 1

@@ -86,7 +86,7 @@ def encode_categorical(X_cat, encoder=None):
         Tuple of (encoded_array, encoder).
     """
     if encoder is None:
-        encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
+        encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=9999)
         encoded_categorical = encoder.fit_transform(X_cat)
     else:
         encoded_categorical = encoder.transform(X_cat)  # Use encoder which knows about categorical values

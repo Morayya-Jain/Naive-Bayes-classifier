@@ -32,7 +32,9 @@ class MixedNaiveBayes:
         Args:
             alpha: Laplace smoothing parameter for CategoricalNB.
         """
-        pass
+        
+        self.alpha = alpha
+
 
     def fit(self, X_continuous, X_categorical, y):
         """Train both sub-models on their respective feature subsets.
@@ -46,6 +48,7 @@ class MixedNaiveBayes:
             self (for method chaining).
         """
         pass
+
 
     def predict(self, X_continuous, X_categorical):
         """Predict class labels for the given instances.
@@ -61,6 +64,7 @@ class MixedNaiveBayes:
             Array of predicted class labels.
         """
         pass
+
 
     def predict_log_proba(self, X_continuous, X_categorical):
         """Compute combined log posterior probabilities for each class.
@@ -81,6 +85,7 @@ class MixedNaiveBayes:
         """
         pass
 
+
     def get_priors(self):
         """Return the learned prior probabilities P(c) for each class.
 
@@ -88,6 +93,7 @@ class MixedNaiveBayes:
             Array of prior probabilities.
         """
         pass
+
 
     def get_gaussian_params(self):
         """Return learned Gaussian parameters for continuous features.
@@ -97,6 +103,7 @@ class MixedNaiveBayes:
             Access via self.gaussian_nb.theta_ and np.sqrt(self.gaussian_nb.var_).
         """
         pass
+
 
     def get_categorical_params(self):
         """Return learned category probability tables for categorical features.
