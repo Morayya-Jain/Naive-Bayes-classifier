@@ -18,7 +18,7 @@ def load_dataset(filepath):
         DataFrame with the loaded data.
     """
 
-    df = pd.read_csv(filepath)
+    df = pd.read_csv(filepath, na_values=['', '?', 'MISSING'])
     return df
 
 
@@ -31,7 +31,7 @@ def preprocess(df):
     Returns:
         Cleaned DataFrame with no missing values and fnlwgt removed.
     """
-
+    
     cleaned_df = df.dropna(subset = CONTINUOUS_FEATURES + CATEGORICAL_FEATURES)  # Removing rows with null values 
     cleaned_df.drop(columns='fnlwgt', inplace=True)  # Removing 'fnlwgt' column as it is not used
     
@@ -64,10 +64,10 @@ def split_continuous_categorical(X):
     Returns:
         Tuple of (X_continuous, X_categorical) DataFrames.
     """
-    X_continuous = X[CONTINUOUS_FEATURES]
-    X_categorical = X[CATEGORICAL_FEATURES]
+    X_cont = X[CONTINUOUS_FEATURES]
+    X_cat = X[CATEGORICAL_FEATURES]
 
-    return (X_continuous, X_categorical)
+    return (X_cont, X_cat)
 
 
 def encode_categorical(X_cat, encoder=None):
@@ -85,14 +85,17 @@ def encode_categorical(X_cat, encoder=None):
     Returns:
         Tuple of (encoded_array, encoder).
     """
-    pass
+    if encoder is None:
+        encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
+        encoded_categorical = encoder.fit_transform(X_cat)
+    else:
+        encoded_categorical = encoder.transform(X_cat)  # Use encoder which knows about categorical values
+        
+    return (encoded_categorical, encoder)
 
 
-def create_validation_split(X_cont, X_cat, y, val_fraction=0.2, random_state=42):
-    """Hold out a validation set from training data.
-
-    Important: Q3 requires a validation set for hyperparameter selection.
-    Do NOT use the test set for this.
+def create_validation_split(X_cont, X_cat, y, val_fraction=0.2, r_state=42):
+    """Hold out a validation set from training data (no test set).
 
     Args:
         X_cont: Continuous features DataFrame.
@@ -104,4 +107,6 @@ def create_validation_split(X_cont, X_cat, y, val_fraction=0.2, random_state=42)
     Returns:
         Tuple of (X_cont_train, X_cont_val, X_cat_train, X_cat_val, y_train, y_val).
     """
-    pass
+    X_cont_train, X_cont_val, X_cat_train, X_cat_val, y_train, y_val = train_test_split(X_cont, X_cat, y, test_size=val_fraction, random_state=r_state)
+
+    return (X_cont_train, X_cont_val, X_cat_train, X_cat_val, y_train, y_val)
