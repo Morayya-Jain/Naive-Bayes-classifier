@@ -1,8 +1,6 @@
 # analysis.py — Feature analysis and model comparison (Q1 + Q4)
 
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 
 def most_predictive_categories(model, feature_names, n=5):
@@ -25,6 +23,19 @@ def most_predictive_categories(model, feature_names, n=5):
         Dict with keys for each class, values are lists of
         (feature_name, category_value, ratio) tuples.
     """
-    pass
+    log_probs = model.get_categorical_params()
 
+    all_ratios = []
+    for i, fname in enumerate(feature_names):
+        # log_probs[i] shape: (2, n_categories) — row 0 = <=50K, row 1 = >50K
+        log_r = log_probs[i][1, :] - log_probs[i][0, :]
+        for v in range(len(log_r)):
+            all_ratios.append((fname, v, np.exp(log_r[v])))
 
+    # Sort by ratio descending — highest R = most predictive of >50K
+    sorted_by_r = sorted(all_ratios, key=lambda x: x[2], reverse=True)
+
+    return {
+        '>50K': sorted_by_r[:n],
+        '<=50K': sorted_by_r[-n:][::-1],  # lowest R = most predictive of <=50K
+    }

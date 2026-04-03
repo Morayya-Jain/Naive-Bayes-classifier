@@ -48,8 +48,7 @@ classifier.fit(X_cont, encoded_X_cat, y)
 # =============================================================================
 # Q2: Supervised Model Evaluation
 # =============================================================================
-log_proba = classifier.predict_log_proba(test_X_cont, test_encoded_X_cat)
-print(find_borderline(test_X, log_proba))
+
 
 # =============================================================================
 # Q3: Semi-Supervised Extension (pick one approach)
