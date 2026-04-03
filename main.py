@@ -15,9 +15,7 @@ from evaluate import (
 )
 from analysis import most_predictive_categories
 from semi_supervised import (
-    label_propagation, iterative_label_propagation,
-    select_random, select_uncertain, reveal_labels, active_learning_loop,
-    e_step, m_step, run_em,
+    select_random, select_uncertain, reveal_labels, active_learning_loop
 )
 
 
