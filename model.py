@@ -34,6 +34,8 @@ class MixedNaiveBayes:
         """
         
         self.alpha = alpha
+        self.gaussian_nb = GaussianNB()
+        self.categorical_nb = CategoricalNB(alpha=self.alpha)
 
 
     def fit(self, X_continuous, X_categorical, y):
@@ -47,7 +49,11 @@ class MixedNaiveBayes:
         Returns:
             self (for method chaining).
         """
-        pass
+
+        self.gaussian_nb.fit(X_continuous, y)
+        self.categorical_nb.fit(X_categorical, y)
+
+        return self
 
 
     def predict(self, X_continuous, X_categorical):
@@ -63,7 +69,11 @@ class MixedNaiveBayes:
         Returns:
             Array of predicted class labels.
         """
-        pass
+
+        log_proba = self.predict_log_proba(X_continuous, X_categorical)
+        indices = np.argmax(log_proba, axis=1)
+
+        return self.gaussian_nb.classes_[indices]
 
 
     def predict_log_proba(self, X_continuous, X_categorical):
@@ -83,7 +93,13 @@ class MixedNaiveBayes:
         Returns:
             Array of shape (n_samples, n_classes) with log probabilities.
         """
-        pass
+
+        gaussian_jll = self.gaussian_nb._joint_log_likelihood(X_continuous)
+        categorical_jll = self.categorical_nb._joint_log_likelihood(X_categorical)
+        # Double counting log P(c)
+        combined = gaussian_jll + categorical_jll - self.categorical_nb.class_log_prior_
+
+        return combined
 
 
     def get_priors(self):
@@ -92,7 +108,8 @@ class MixedNaiveBayes:
         Returns:
             Array of prior probabilities.
         """
-        pass
+
+        return self.gaussian_nb.class_prior_
 
 
     def get_gaussian_params(self):
@@ -102,7 +119,11 @@ class MixedNaiveBayes:
             Dict with 'means' and 'stds', each of shape (n_classes, n_continuous_features).
             Access via self.gaussian_nb.theta_ and np.sqrt(self.gaussian_nb.var_).
         """
-        pass
+
+        means = self.gaussian_nb.theta_
+        stds = np.sqrt(self.gaussian_nb.var_)
+
+        return {'means': means, 'stds': stds}
 
 
     def get_categorical_params(self):
@@ -112,4 +133,5 @@ class MixedNaiveBayes:
             The feature_log_prob_ from CategoricalNB — a list where each entry
             is an array of shape (n_classes, n_categories_for_that_feature).
         """
-        pass
+        
+        return self.categorical_nb.feature_log_prob_
