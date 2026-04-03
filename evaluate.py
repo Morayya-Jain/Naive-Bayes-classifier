@@ -160,12 +160,3 @@ def find_borderline(X, log_proba, n=5):
     result['R'] = ratios[top]
 
     return result
-
-def print_classification_report(y_true, y_pred):
-    """Print a formatted classification report with confusion matrix and all metrics.
-
-    Args:
-        y_true: Array of true labels.
-        y_pred: Array of predicted labels.
-    """
-    pass

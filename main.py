@@ -11,12 +11,9 @@ from data import (
 from model import MixedNaiveBayes
 from evaluate import (
     compute_confusion_matrix, compute_metrics, posterior_ratio,
-    find_high_confidence, find_borderline, print_classification_report,
+    find_high_confidence, find_borderline,
 )
-from analysis import (
-    most_predictive_categories, compare_models, confidence_distribution,
-    plot_confidence_histogram, parameter_changes,
-)
+from analysis import most_predictive_categories
 from semi_supervised import (
     label_propagation, iterative_label_propagation,
     select_random, select_uncertain, reveal_labels, active_learning_loop,
