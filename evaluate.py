@@ -120,7 +120,22 @@ def find_high_confidence(X, log_proba, y_true, class_label, n=5):
     Returns:
         DataFrame of the n most confident instances with their features and ratios.
     """
-    pass
+    
+    ratios = posterior_ratio(log_proba)
+
+    if class_label == CLASSES[1]:  # >50K: high R = confident
+        filtered = np.where(ratios > 1)[0]
+        sorted_pos = filtered[np.argsort(-ratios[filtered])]
+    else:                          # <=50K: low R = confident
+        filtered = np.where(ratios < 1)[0]  
+        sorted_pos = filtered[np.argsort(ratios[filtered])]
+
+    top = sorted_pos[:n]
+    result = X.iloc[top].copy()
+    result['R'] = ratios[top]
+    result['true_label'] = y_true.iloc[top].values
+
+    return result
 
 
 def find_borderline(X, log_proba, n=5):
@@ -136,8 +151,15 @@ def find_borderline(X, log_proba, n=5):
     Returns:
         DataFrame of the n most borderline instances with their features and ratios.
     """
-    pass
+    
+    ratios = posterior_ratio(log_proba)
+    distance = np.abs(1 - ratios)
+    top = np.argsort(distance)[:n]
 
+    result = X.iloc[top].copy()
+    result['R'] = ratios[top]
+
+    return result
 
 def print_classification_report(y_true, y_pred):
     """Print a formatted classification report with confusion matrix and all metrics.

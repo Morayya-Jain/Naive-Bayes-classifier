@@ -28,11 +28,31 @@ from semi_supervised import (
 # Q1: Supervised Model Training
 # =============================================================================
 
+# Training
+initial_dataset = load_dataset(TRAIN_FILE)
+cleaned_dataset = preprocess(initial_dataset)
+
+X, y = separate_features_label(cleaned_dataset)
+X_cont, X_cat = split_continuous_categorical(X)
+encoded_X_cat, encoder = encode_categorical(X_cat)
+
+# Testing
+testing_dataset = load_dataset(TEST_FILE)
+cleaned_test_dataset = preprocess(testing_dataset)
+
+test_X, test_y = separate_features_label(cleaned_test_dataset)
+test_X_cont, test_X_cat = split_continuous_categorical(test_X)
+test_encoded_X_cat, _ = encode_categorical(test_X_cat, encoder)
+
+classifier = MixedNaiveBayes()
+classifier.fit(X_cont, encoded_X_cat, y)
+
 
 # =============================================================================
 # Q2: Supervised Model Evaluation
 # =============================================================================
-
+log_proba = classifier.predict_log_proba(test_X_cont, test_encoded_X_cat)
+print(find_borderline(test_X, log_proba))
 
 # =============================================================================
 # Q3: Semi-Supervised Extension (pick one approach)

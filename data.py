@@ -32,9 +32,10 @@ def preprocess(df):
         Cleaned DataFrame with no missing values and fnlwgt removed.
     """
     
-    cleaned_df = df.dropna(subset = CONTINUOUS_FEATURES + CATEGORICAL_FEATURES)  # Removing rows with null values 
-    cleaned_df.drop(columns='fnlwgt', inplace=True)  # Removing 'fnlwgt' column as it is not used
-    
+    cleaned_df = df.dropna(subset = CONTINUOUS_FEATURES + CATEGORICAL_FEATURES)  # Removing rows with null values
+    cleaned_df = cleaned_df.drop(columns='fnlwgt')  # Removing 'fnlwgt' column as it is not used
+    cleaned_df = cleaned_df.reset_index(drop=True)
+
     return cleaned_df
 
 
@@ -86,12 +87,16 @@ def encode_categorical(X_cat, encoder=None):
         Tuple of (encoded_array, encoder).
     """
     if encoder is None:
-        encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=9999)
+        encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
         encoded_categorical = encoder.fit_transform(X_cat)
     else:
-        encoded_categorical = encoder.transform(X_cat)  # Use encoder which knows about categorical values
-        
-    return (encoded_categorical, encoder)
+        encoded_categorical = encoder.transform(X_cat)
+        # Replace unseen categories (-1) with 0 so CategoricalNB can handle them.
+        # With Laplace smoothing, category 0 gets a small uniform-ish probability,
+        # which is a reasonable fallback for unknown values.
+        encoded_categorical[encoded_categorical == -1] = 0
+
+    return (encoded_categorical.astype(int), encoder)
 
 
 def create_validation_split(X_cont, X_cat, y, val_fraction=0.2, r_state=42):
