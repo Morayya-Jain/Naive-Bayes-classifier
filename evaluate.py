@@ -1,8 +1,6 @@
 # evaluate.py — Metrics, confusion matrix, and confidence analysis
 
 import numpy as np
-import pandas as pd
-
 from config import CLASSES
 
 
