@@ -74,8 +74,7 @@ def reveal_labels(indices):
 
 def active_learning_loop(model, X_cont_train, X_cat_train, y_train,
                          X_cont_unlabelled, X_cat_unlabelled,
-                         true_labels, strategy='uncertain',
-                         n_per_round=200, n_rounds=1):
+                         strategy='uncertain', n=200):
     """Run the active learning loop.
 
     Each round:
@@ -93,12 +92,27 @@ def active_learning_loop(model, X_cont_train, X_cat_train, y_train,
         y_train: Training labels.
         X_cont_unlabelled: Continuous features of unlabelled data.
         X_cat_unlabelled: Encoded categorical features of unlabelled data.
-        true_labels: All true labels from unlabelled_with_labels.csv.
         strategy: 'random' or 'uncertain'.
-        n_per_round: Instances to select per round.
-        n_rounds: Number of active learning rounds.
+        n: Instances to select per round.
 
     Returns:
         Final retrained MixedNaiveBayes model.
     """
-    pass
+    
+    if strategy == 'uncertain':
+        indices = select_uncertain(model, X_cont_unlabelled, X_cat_unlabelled, n)
+    else:
+        indices = select_random(len(X_cont_unlabelled), n)
+    
+    selected_y = reveal_labels(indices)
+    selected_X_cont_unlabelled = np.array(X_cont_unlabelled)[indices]
+    selected_X_cat_unlabelled = np.array(X_cat_unlabelled)[indices]
+
+    new_X_cont = np.vstack([X_cont_train, selected_X_cont_unlabelled])
+    new_X_cat = np.vstack([X_cat_train, selected_X_cat_unlabelled])
+    new_y = np.concatenate([y_train, selected_y])
+
+    new_model = MixedNaiveBayes(alpha=model.alpha)
+    new_model.fit(new_X_cont, new_X_cat, new_y)
+
+    return new_model

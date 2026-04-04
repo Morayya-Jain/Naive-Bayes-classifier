@@ -52,6 +52,25 @@ classifier.fit(X_cont, encoded_X_cat, y)
 # Q3: Semi-Supervised Extension (pick one approach)
 # =============================================================================
 
+unlabelled_dataset = load_dataset(UNLABELLED_FILE)
+cleaned_unlabelled_dataset = preprocess(unlabelled_dataset)
+
+X_cont_unlabelled, X_cat_unlabelled = split_continuous_categorical(cleaned_unlabelled_dataset)
+encoded_X_cat_unlabelled, _ = encode_categorical(X_cat_unlabelled, encoder)
+
+random_model = active_learning_loop(classifier, X_cont, encoded_X_cat, y, X_cont_unlabelled, encoded_X_cat_unlabelled, 'random')
+uncertain_model = active_learning_loop(classifier, X_cont, encoded_X_cat, y, X_cont_unlabelled, encoded_X_cat_unlabelled)
+
+y_pred_supervised = classifier.predict(test_X_cont, test_encoded_X_cat)                                                                                                                                                                                               
+print("Supervised:", compute_metrics(test_y, y_pred_supervised)['accuracy'])                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                    
+# Random selection model                                                                                                                                                                                                                                              
+y_pred_random = random_model.predict(test_X_cont, test_encoded_X_cat)                                                                                                                                                                                                 
+print("Random:", compute_metrics(test_y, y_pred_random)['accuracy'])                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                    
+# Uncertainty selection model                                                                                                                                                                                                                                         
+y_pred_uncertain = uncertain_model.predict(test_X_cont, test_encoded_X_cat)                                                                                                                                                                                           
+print("Uncertain:", compute_metrics(test_y, y_pred_uncertain)['accuracy'])    
 
 # =============================================================================
 # Q4: Semi-Supervised Model Evaluation
