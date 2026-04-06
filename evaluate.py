@@ -61,15 +61,15 @@ def compute_metrics(y_true, y_pred):
     accuracy = correct_prediction / len(y_pred) if len(y_pred) > 0 else -1
 
     # For '>50K' class label
-    positive_precision = TP / (TP + FP)
-    positive_recall = TP / (TP + FN)
-    positive_f1 = (2 * positive_precision * positive_recall) / (positive_precision + positive_recall)
+    positive_precision = TP / (TP + FP) if (TP + FP) > 0 else 0
+    positive_recall = TP / (TP + FN) if (TP + FN) > 0 else 0
+    positive_f1 = (2 * positive_precision * positive_recall) / (positive_precision + positive_recall) if (positive_precision + positive_recall) > 0 else 0
     positive_class_metrics = {'precision': positive_precision, 'recall': positive_recall, 'f1': positive_f1}
-    
+
     # For '<=50K' class label
-    negative_precision = TN / (TN + FN)
-    negative_recall = TN / (TN + FP)
-    negative_f1 = (2 * negative_precision * negative_recall) / (negative_precision + negative_recall)
+    negative_precision = TN / (TN + FN) if (TN + FN) > 0 else 0
+    negative_recall = TN / (TN + FP) if (TN + FP) > 0 else 0
+    negative_f1 = (2 * negative_precision * negative_recall) / (negative_precision + negative_recall) if (negative_precision + negative_recall) > 0 else 0
     negative_class_metrics = {'precision': negative_precision, 'recall': negative_recall, 'f1': negative_f1}
 
     metrics = {'accuracy': accuracy, '<=50K': negative_class_metrics, '>50K': positive_class_metrics}
