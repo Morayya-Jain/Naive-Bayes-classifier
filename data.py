@@ -112,6 +112,6 @@ def create_validation_split(X_cont, X_cat, y, val_fraction=0.2, r_state=42):
     Returns:
         Tuple of (X_cont_train, X_cont_val, X_cat_train, X_cat_val, y_train, y_val).
     """
-    X_cont_train, X_cont_val, X_cat_train, X_cat_val, y_train, y_val = train_test_split(X_cont, X_cat, y, test_size=val_fraction, random_state=r_state)
 
+    X_cont_train, X_cont_val, X_cat_train, X_cat_val, y_train, y_val = train_test_split(X_cont, X_cat, y, test_size=val_fraction, random_state=r_state)
     return (X_cont_train, X_cont_val, X_cat_train, X_cat_val, y_train, y_val)

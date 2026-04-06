@@ -8,7 +8,8 @@
       "Bash(grep -E \"\\\\.\\(md|txt|rst\\)$\")",
       "Bash(brew install:*)",
       "Bash(pdftoppm -v)",
-      "Bash(pdftotext \"/Users/morayyajain/Developer/Naive-Bayes-classifier/Guideline and specs.pdf\" -)"
+      "Bash(pdftotext \"/Users/morayyajain/Developer/Naive-Bayes-classifier/Guideline and specs.pdf\" -)",
+      "Bash(/usr/local/bin/python3:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

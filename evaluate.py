@@ -131,7 +131,7 @@ def find_high_confidence(X, log_proba, y_true, class_label, n=5):
 
     top = sorted_pos[:n]
     result = X.iloc[top].copy()
-    result['R'] = ratios[top]
+    result['log_R'] = log_proba[top, 1] - log_proba[top, 0] 
     result['true_label'] = y_true.iloc[top].values
 
     return result
